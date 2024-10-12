@@ -63,11 +63,21 @@ app.put('/todos/:id', (req, res) => {
 
 app.delete('/todos/:id', (req, res) => {
 	const { id } = req.params;
+	if (isNaN(id)) {
+		return res.status(400).json({ message: "ID must be a number!"})
+	}
 	const todos = fs.readFileSync('../todos.json', 'utf-8');
+	if (todos.length == 0) {
+		return res.status(400).json({ message: "You dont have any todos yet!" });
+	};
 	const parsedTodos = JSON.parse(todos);
-	const newTodoList = parsedTodos.filter( t => t.id != id)
-	fs.writeFileSync('../todos.json', JSON.stringify(newTodoList))
-	return res.status(201).json({message: "Your todo has been deleted.", result: newTodoList})
+	if (parsedTodos.find(t => t.id == id)) {
+		const newTodoList = parsedTodos.filter( t => t.id != id)
+		fs.writeFileSync('../todos.json', JSON.stringify(newTodoList))
+		return res.status(201).json({message: "Your todo has been deleted.", result: newTodoList})
+	} else {
+		return res.status(400).json({ message: "No todo with this ID"})
+	}
 })
 
 app.listen(port, () => {
