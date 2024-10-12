@@ -1,6 +1,6 @@
 const prompt = require("prompt-sync")();
 
-const command = prompt("Please give me a command, u would like to do!");
+const command = prompt("Give me a command, u would like to do! ");
 
 switch (command) {
 	case "read-todos":
@@ -11,11 +11,26 @@ switch (command) {
 			});
 		break;
 	case "create":
+		const givenTitle = prompt("Give a Todo title! ");
+
+		if (givenTitle.length == 0) {
+			throw new Error("U must give a title!");
+		}
+
+		fetch(`http://localhost:8000/todos/`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				title: givenTitle,
+			}),
+		})
+			.then((response) => response.json())
+			.then((data) => console.log(data));
 		break;
 	case "update":
 		break;
 	case "delete":
-		id = prompt("Please give the ID of the todo u would like to delete!");
+		id = prompt("Give the ID of the todo u would like to delete!");
 		if (id.length != 0) {
 			fetch(`http://localhost:8000/todos/${id}`, {
 				method: "DELETE",
@@ -26,12 +41,9 @@ switch (command) {
 					console.log(data);
 				});
 		} else {
-			console.log("error");
+			console.log("U must give an ID!");
 		}
 		break;
 	default:
 		throw new Error(`There isnt a ${command} type of command!`);
 }
-
-console.log(hi);
-console.log(typeof hi);
