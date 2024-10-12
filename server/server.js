@@ -61,13 +61,13 @@ app.put('/todos/:id', (req, res) => {
 	// }
 })
 
-app.delete('../todos/:id', (req, res) => {
+app.delete('/todos/:id', (req, res) => {
 	const { id } = req.params;
 	const todos = fs.readFileSync('../todos.json', 'utf-8');
 	const parsedTodos = JSON.parse(todos);
 	const newTodoList = parsedTodos.filter( t => t.id != id)
 	fs.writeFileSync('../todos.json', JSON.stringify(newTodoList))
-	return res.json({message: "Your todo has been deleted."})
+	return res.status(201).json({message: "Your todo has been deleted.", result: newTodoList})
 })
 
 app.listen(port, () => {
