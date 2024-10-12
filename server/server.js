@@ -42,6 +42,34 @@ app.post("/todos", (req, res) => {
 	}
 });
 
+app.put('/todos/:id', (req, res) => {
+	if (req.body.length == 0) {
+		return res.status(400).json({ message: "You have to give a modified todo or write 'complete', if you completed a todo!" });
+	};
+	const { id } = req.params;
+	const todos = fs.readFileSync('../todos.json', 'utf-8');
+	if (todos.length == 0) {
+		return res.json({ message: "You dont have any todos yet!" });
+	};
+	const parsedTodos = JSON.parse(todos);
+	const todo = parsedTodos.filter( t => t.id === id);
+
+	const { userInput } = req.body;
+	console.log(userInput);
+	// if (userInput === "completed") {
+
+	// }
+})
+
+app.delete('../todos/:id', (req, res) => {
+	const { id } = req.params;
+	const todos = fs.readFileSync('../todos.json', 'utf-8');
+	const parsedTodos = JSON.parse(todos);
+	const newTodoList = parsedTodos.filter( t => t.id != id)
+	fs.writeFileSync('../todos.json', JSON.stringify(newTodoList))
+	return res.json({message: "Your todo has been deleted."})
+})
+
 app.listen(port, () => {
 	console.log(`Server is listening on port: ${port}`);
 });
