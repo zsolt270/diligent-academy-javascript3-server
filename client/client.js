@@ -1,10 +1,13 @@
 import { GetTodos, CreateTodo, DeleteTodo } from "./CrudFunctions.js";
-const prompt = require("prompt-sync")();
+import promptFunction from "prompt-sync";
+// const prompt = require("prompt-sync")();
+const prompt = promptFunction();
 
 const command = prompt("Give a command, u would like to do! ");
 
 switch (command) {
 	case "read-all-todos":
+		console.log("yes");
 		console.log(GetTodos());
 		// fetch("http://localhost:8000/todos")
 		// 	.then((response) => response.json())
@@ -22,6 +25,7 @@ switch (command) {
 			console.log(filter);
 			throw new Error("The filter must be either completed or not-completed");
 		}
+		console.log(GetTodos());
 		// fetch(`http://localhost:8000/todos/`)
 		// .then((response) => response.json())
 		// .then((data) => {
