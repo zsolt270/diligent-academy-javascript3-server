@@ -7,8 +7,7 @@ const command = prompt("Give a command, u would like to do! ");
 
 switch (command) {
 	case "read-all-todos":
-		console.log("yes");
-		console.log(GetTodos());
+		GetTodos().then((todos) => console.log(todos));
 		// fetch("http://localhost:8000/todos")
 		// 	.then((response) => response.json())
 		// 	.then((data) => {
@@ -25,7 +24,17 @@ switch (command) {
 			console.log(filter);
 			throw new Error("The filter must be either completed or not-completed");
 		}
-		console.log(GetTodos());
+
+		GetTodos().then((todos) => {
+			let filteredTodos = [];
+			if (filter == "completed") {
+				filteredTodos = todos.filter((todo) => todo.isCompleted == true);
+			} else {
+				filteredTodos = todos.filter((todo) => todo.isCompleted == false);
+			}
+			console.log(`The ${filter} todos:`);
+			console.log(filteredTodos);
+		});
 		// fetch(`http://localhost:8000/todos/`)
 		// .then((response) => response.json())
 		// .then((data) => {
@@ -44,7 +53,7 @@ switch (command) {
 		if (givenTitle.length == 0) {
 			throw new Error("U must give a title!");
 		}
-		console.log(CreateTodo(givenTitle));
+		CreateTodo(givenTitle);
 		// fetch(`http://localhost:8000/todos/`, {
 		// 	method: "POST",
 		// 	headers: { "Content-Type": "application/json" },
@@ -60,9 +69,9 @@ switch (command) {
 	case "update-todo-status":
 		break;
 	case "delete":
-		id = prompt("Give the ID of the todo u would like to delete!");
+		const id = prompt("Give the ID of the todo u would like to delete! ");
 		if (id.length != 0) {
-			console.log(DeleteTodo(id));
+			DeleteTodo(id);
 			// fetch(`http://localhost:8000/todos/${id}`, {
 			// 	method: "DELETE",
 			// 	headers: { "Content-Type": "application/json" },

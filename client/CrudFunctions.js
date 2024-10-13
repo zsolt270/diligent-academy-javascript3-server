@@ -1,9 +1,9 @@
 export function GetTodos() {
-	console.log("in gettodos");
-	fetch("http://localhost:8000/todos")
-		.then((response) => response.json())
+	return fetch("http://localhost:8000/todos")
+		.then((response) => {
+			return response.json();
+		})
 		.then((data) => {
-			console.log(data);
 			return data;
 		});
 }
@@ -18,7 +18,7 @@ export function CreateTodo(title) {
 	})
 		.then((response) => response.json())
 		.then((data) => {
-			return data;
+			console.log(data);
 		});
 }
 
