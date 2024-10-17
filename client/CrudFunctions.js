@@ -32,3 +32,31 @@ export function DeleteTodo(id) {
 			console.log(data);
 		});
 }
+
+export function updateTitle(id, title) {
+	return fetch(`http://localhost:8000/updatetitle/${id}`, {
+		method: "PUT",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({ title: title })
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.then((data) => {
+			return data;
+		});
+}
+
+export function updateStatus(id, status) {
+	return fetch(`http://localhost:8000/updatestatus/${id}`, {
+		method: "PUT",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({ status: status })
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.then((data) => {
+			return data;
+		});
+}

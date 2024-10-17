@@ -1,7 +1,4 @@
 import express from "express";
-// const express = require("express");
-// const router = require("./router");
-// const fs = require("fs");
 import fs from "fs";
 
 const port = 8000;
@@ -44,26 +41,62 @@ app.post("/todos", (req, res) => {
 	}
 });
 
-app.put("/todos/:id", (req, res) => {
-	if (req.body.length == 0) {
-		return res.status(400).json({
-			message:
-				"You have to give a modified todo or write 'complete', if you completed a todo!",
-		});
-	}
-	const { id } = req.params;
+app.put("/updatetitle/:id", (req, res) => {
+	const { id } = req.params
+	const {title} = req.body
 	const todos = fs.readFileSync("../todos.json", "utf-8");
 	if (todos.length == 0) {
 		return res.json({ message: "You dont have any todos yet!" });
+	} 
+	const parsedTodos = JSON.parse(todos);
+	const todo = parsedTodos.find((t) => t.id == id)
+	if (todo) {
+		const newTodoList = parsedTodos.map((todo) => {
+			if (todo.id === Number(id)) {
+				todo.title = title
+			}
+			return todo
+		})
+		fs.writeFileSync('../todos.json', JSON.stringify(newTodoList))
+		return res.status(200).json(newTodoList)
+	} else {
+		return res.status(404).send({message: "Not found"})
+	}
+})
+
+
+app.put("/updatestatus/:id", (req, res) => {
+	if (req.body.length == 0) {
+		return res.status(400).json({
+			message:
+				"You have to write 'done' or 'undone'! ",
+		});
+	}
+	const { id } = req.params;
+	const { status } = req.body;
+	const todos = fs.readFileSync("../todos.json", "utf-8");
+	if (todos.length == 0) {
+		return res.status(404).send({ message: "You dont have any todos yet!" });
 	}
 	const parsedTodos = JSON.parse(todos);
 	const todo = parsedTodos.filter((t) => t.id === id);
-
-	const { userInput } = req.body;
-	console.log(userInput);
-	// if (userInput === "completed") {
-
-	// }
+	if (todo) {
+		const newTodoList = parsedTodos.map((todo) => {
+			if (todo.id === Number(id)) {
+				if (status === "done") {
+					todo.isCompleted = true
+				}
+				if (status === "undone") {
+					todo.isCompleted = false
+				}
+			}
+			return todo
+		})
+		fs.writeFileSync('../todos.json', JSON.stringify(newTodoList))
+		return res.status(200).json(newTodoList)
+	} else {
+		return res.status(404).send({message: "Not found"})
+	}
 });
 
 app.delete("/todos/:id", (req, res) => {
